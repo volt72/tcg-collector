@@ -1,0 +1,70 @@
+.navbar {
+  margin-bottom: 0;
+  background-color: gainsboro;
+  display: flex;
+  align-items: center;
+  position: relative; }
+
+.content {
+  height: calc(100vh - 52px);
+  display: flex;
+  overflow: hidden;
+  position: relative; }
+
+.main, .sidebar {
+  height: 100%;
+  padding-top: 15px;
+  overflow: auto;
+  height: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none; }
+
+.sidebar {
+  background-color: #ebebeb;
+  margin-right: -20px;
+  margin-left: -30px; }
+
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca; }
+
+.main {
+  background-color: whitesmoke;
+  display: flex;
+  flex-wrap: wrap; }
+
+.main::-webkit-scrollbar, .sidebar::-webkit-scrollbar {
+  display: none; }
+
+.card-container {
+  display: block;
+  float: left;
+  width: calc(100% / 6);
+  font-size: 0.8em; }
+
+.card-img-wrapper {
+  padding: 5%; }
+  .card-img-wrapper img {
+    width: 100%;
+    height: auto;
+    box-shadow: rgba(0, 0, 0, 0.2) 3px 5px 5px;
+    margin-bottom: 5%;
+    background: none;
+    transition: all .1s linear; }
+  .card-img-wrapper img:hover {
+    -webkit-filter: opacity(60%); }
+
+.card-details .card-image {
+  width: 300px;
+  float: left; }
+  .card-details .card-image img {
+    padding-bottom: 20px;
+    width: 100%; }
+.card-details .table-details {
+  width: 500px;
+  float: right;
+  padding-left: 25px; }
+
+/*# sourceMappingURL=style.css.map */

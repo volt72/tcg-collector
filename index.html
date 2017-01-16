@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<meta charset="UTF-8">
+    	<title>TCG Collector</title>
+    	<link rel="stylesheet" href="css/featherlight.css" />
+    	<link rel="stylesheet" href="css/bootstrap.min.css">
+    	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    	<link rel="stylesheet" href="css/style.css">
+
+		<!-- Make script imports work for both electron and browser -->
+		<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<!-- <script src="js/js.cookie.js"></script> -->
+		<script src="js/cookies.min.js"></script>
+		<script src="js/getcards.js"></script>
+		<script src="js/collection.js"></script>
+  	</head>
+	<body>
+		<!-- <script type="text/javascript">getCardList()</script> -->
+		<nav class="navbar navbar-default">
+		  	<div class="container">
+			    <div class="navbar-header navbar-brand">TCG Collector</div>
+			    <form class="navbar-form navbar-right">
+			      	<div class="input-group">
+				        <input type="text" class="form-control" id="search-box" placeholder="Search" oninput="searchForCards()">
+			        	<div class="input-group-btn">
+			            		<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+			        	</div>
+			      	</div>
+		    	</form>
+		  	</div>
+		</nav>
+		<div class="container content">
+			<div class="col-sm-3 sidebar">
+		      	<ul class="nav nav-sidebar">
+		        	<li class="active"><a href="#">Card Database</a></li>
+		        	<li><a href="#">My Collection <span class="badge" id="collection-badge"></span></a></li>
+		        	<li><a href="#">My Decks <span class="badge" id="decks-badge"></span></a></li>
+		        	<li><a href="#">Netdecks</a></li>
+		      	</ul><br>
+		    </div>
+    		<div class="col-sm-9 main" id="cards-container">
+			</div>
+		</div>
+
+		<!-- <div class="container"> -->
+			<!-- <script type="text/javascript">getCardList()</script> -->
+      		<!-- <button type="button" id="button-getcards" class="btn btn-default" onclick="getCardList()">Get Card List</button> -->
+			<!-- <div class="title"> -->
+				<!-- <h1>TCG Collector</h1> -->
+			<!-- </div> -->
+			<!-- <div sid="search-box-wrapper"><input type="text" id="search-box" value="" oninput="searchForCards()"></div> -->
+			<!-- <p id="card-list"></p> -->
+		<!-- </div> -->
+
+		<script src="js/search.js"></script>
+		<script src="js/featherlight.js"</script>
+		<script>if (window.module) module = window.module;</script>
+  	</body>
+</html>
