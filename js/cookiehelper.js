@@ -24,7 +24,7 @@ function getCookie(name, callback) {
 	if(session != undefined) {
 		session.defaultSession.cookies.get({ url: cookieUrl, name: name }, callback);
 	} else {
-		callback(undefined, Cookies.get(name, { domain: cookieUrl }))
+		callback(undefined, [Cookies.get(name, { domain: cookieUrl })])
 	}
 }
 
@@ -32,7 +32,7 @@ function getAllCookies(callback) {
 	if(session != undefined) {
 		session.defaultSession.cookies.get({ url: cookieUrl }, callback);
 	} else {
-		callback(undefined, Cookies.get({ domain: cookieUrl }))
+		callback(undefined, [Cookies.get({ domain: cookieUrl })])
 	}
 }
 
