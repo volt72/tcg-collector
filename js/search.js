@@ -167,7 +167,7 @@ function escapeHtml(text) {
 }
 
 function getCardPrices(set) {
-	$.getJSON('http://yugiohprices.com/api/price_for_print_tag/' + set, function(json) {
+	$.getJSON('https://yugiohprices.com/api/price_for_print_tag/' + set, function(json) {
 		if(json.status == 'success' && json.data.price_data.price_data.status == "success") {
 			var prices = json.data.price_data.price_data.data.prices;
 			var low = prices.low.toFixed(2);
