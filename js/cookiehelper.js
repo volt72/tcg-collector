@@ -16,7 +16,7 @@ function setCookie(name, value) {
 			}
 		);
 	} else {
-		Cookies.set(name, value, { domain: cookieUrl });
+		Cookies.set(name, value, { domain: cookieUrl, expires: 99999 });
 	}
 }
 
