@@ -1,14 +1,9 @@
 var cardList = [];
 
-var totalCardIndex;
-
-getCardList();
-
 function getCardList() {
 	cardList = [];
-	totalCardIndex = 0;
 
-	$.getJSON("res/cards.json", function(data) {
+	return $.getJSON("res/cards.json", function(data) {
 		for(i = 0; i < data.cards.length; i++) {
 			cardList.push(data.cards[i]);
 		}
@@ -41,7 +36,8 @@ function getYqlFromUrl(url) {
 
 function getCardFromTitle(title) {
 	for(i = 0; i < cardList.length; i++) {
-		if(cardList[i].title == title) return cardList[i];
+		if(cardList[i].title == title) {
+			return cardList[i];
+		}
 	}
-	return undefined;
 }

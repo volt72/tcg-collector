@@ -8,25 +8,19 @@
     	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
     	<link rel="stylesheet" href="css/style.css">
 
-		<!-- Make script imports work for both electron and browser -->
-		<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-		<script src="js/jquery-3.1.1.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<!-- <script src="js/js.cookie.js"></script> -->
-		<script src="js/cookies.min.js"></script>
-		<script src="js/getcards.js"></script>
-		<script src="js/collection.js"></script>
+    	<script type="application/json" src="res/cards.json"></script>
   	</head>
 	<body>
 		<!-- <script type="text/javascript">getCardList()</script> -->
 		<nav class="navbar navbar-default">
 		  	<div class="container">
 			    <div class="navbar-header navbar-brand">TCG Collector</div>
-			    <form class="navbar-form navbar-right">
+			    <form class="navbar-form navbar-right" id="search-form">
 			      	<div class="input-group">
-				        <input type="text" class="form-control" id="search-box" placeholder="Search" oninput="searchForCards()">
+				        <input type="text" class="form-control" id="search-box" placeholder="Search">
 			        	<div class="input-group-btn">
-			            		<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+		            		<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+		            		<button class="btn btn-default" onclick="clearSearchBox()"><i class="glyphicon glyphicon-remove"></i></button>
 			        	</div>
 			      	</div>
 		    	</form>
@@ -34,15 +28,50 @@
 		</nav>
 		<div class="container content">
 			<div class="col-sm-3 sidebar">
+		      	<!-- <ul class="nav nav-sidebar">
+		        	<li id="list-section0">
+		        		<a href="#" onclick="changeSection(0)">Card Database</a>
+	        		</li>
+		        	<li id="list-section1">
+		        		<a href="#" onclick="changeSection(1)">My Collection <span class="badge" id="collection-badge"></span></a>
+	        		</li>
+		        	<li id="list-section2">
+		        		<a href="#" onclick="changeSection(2)">My Decks <span class="badge" id="decks-badge"></span></a>
+        			</li>
+		        	<li id="list-section3">
+		        		<a href="#" onclick="changeSection(3)">Netdecks</a>
+	        		</li>
+		      	</ul><br> -->
+
 		      	<ul class="nav nav-sidebar">
-		        	<li class="active"><a href="#">Card Database</a></li>
-		        	<li><a href="#">My Collection <span class="badge" id="collection-badge"></span></a></li>
-		        	<li><a href="#">My Decks <span class="badge" id="decks-badge"></span></a></li>
-		        	<li><a href="#">Netdecks</a></li>
-		      	</ul><br>
+		          	<li id="list-section0"><a href="#" onclick="changeSection(0)">Card Database</a></li>
+		          	<li id="list-section1"><a href="#" onclick="changeSection(1)">My Collection <span class="badge" id="collection-badge"></span></a></li>
+
+		          	<!-- <li><a href="#">My Decks <span class="badge" id="decks-badge">0</span> <span class="caret"></span></a></li>
+		          	<div class="collapse nav nav-sidebar" id="decks"></div>
+		          	<li id="list-section1"><a href="#" onclick="changeSection(3)">Netdecks</a></li> -->
+		        </ul>
+		        <div class="nav-page">
+			        <nav>
+			        	<p>Created by <a href="http://www.kianbennett.co.uk" target="_blank">Kian Bennett</a></p>
+			        	<p>Card info from <br><a href="http://yugioh.wikia.com/wiki/Yu-Gi-Oh!_Wikia" target="_blank">Yu-Gi-Oh! Wikia</a></p>
+			        	<p>Card prices from <br><a href="http://yugiohprices.com/" target="_blank">YuGiOh Card Prices</a></p>
+						<ul class="pagination pagination-sm">
+							<li class="page-item" id="page-first"><a class="page-link" href="#"><span class="glyphicon glyphicon-step-backward"></span></a></li>
+							<li class="page-item" id="page-prev"><a class="page-link" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+							<li class="page-item" id="page-1"><a class="page-link" href="#">1</a></li>
+							<li class="page-item" id="page-2"><a class="page-link" href="#">2</a></li>
+							<li class="page-item" id="page-3"><a class="page-link" href="#">3</a></li>
+							<li class="page-item" id="page-next"><a class="page-link" href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+							<li class="page-item" id="page-last"><a class="page-link" href="#"><span class="glyphicon glyphicon-step-forward"></span></a></li>
+						</ul>
+					</nav>
+		        </div>
 		    </div>
-    		<div class="col-sm-9 main" id="cards-container">
-			</div>
+			<div class="col-sm-9 main" id="cards-container0"></div>
+			<div class="col-sm-9 main" id="cards-container1"></div>
+			<div class="col-sm-9 main" id="cards-container2"></div>
+			<div class="col-sm-9 main" id="cards-container3"></div>
 		</div>
 
 		<!-- <div class="container"> -->
@@ -55,8 +84,21 @@
 			<!-- <p id="card-list"></p> -->
 		<!-- </div> -->
 
+		<!-- Make script imports work for both electron and browser -->
+		<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+
+		<script src="js/js.cookie.js"></script>
+		<script src="js/cookiehelper.js"></script>
+		<script src="js/index.js"></script>
+		<script src="js/getcards.js"></script>
+		<script src="js/collection.js"></script>
+		<script src="js/decks.js"></script>
 		<script src="js/search.js"></script>
 		<script src="js/featherlight.js"</script>
+
 		<script>if (window.module) module = window.module;</script>
   	</body>
 </html>
