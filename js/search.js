@@ -167,12 +167,14 @@ function escapeHtml(text) {
 }
 
 function getCardPrices(set) {
-	$.getJSON('https://yugiohprices.com/api/price_for_print_tag/' + set, function(json) {
+	$.getJSON(getYqlFromUrl('https://yugiohprices.com/api/price_for_print_tag/' + set), function(data) {
+		var json = data.query.results.json;
 		if(json.status == 'success' && json.data.price_data.price_data.status == "success") {
-			var prices = json.data.price_data.price_data.data.prices;
-			var low = prices.low.toFixed(2);
-			var average = prices.average.toFixed(2);
-			var high = prices.high.toFixed(2);
+			var prices = json.data.price_data.price_data.data.prices; // Without YQL
+			console.log(prices.low);
+			var low = parseFloat(prices.low).toFixed(2);
+			var average = parseFloat(prices.average).toFixed(2);
+			var high = parseFloat(prices.high).toFixed(2);
 			$('#price-' + set).html("$" + low + " / <b>$" + average + "</b> / $" + high);
 		} else {
 			$('#price-' + set).html("n/a");
