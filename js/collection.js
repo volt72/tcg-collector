@@ -3,7 +3,7 @@ var cardCollection = []; // contains objects with set and card
 function loadCollection() {
 	cardCollection = [];
 	getCookie("card_collection", (error, cookies) => {
-		if(cookies.length > 0) {
+		if(cookies != undefined && cookies.length > 0) {
 			var collection = cookies[0].value;
 			var json = JSON.parse(collection);
 			for(var i = 0; i < json.length; i++) {
