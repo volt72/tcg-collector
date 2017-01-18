@@ -135,8 +135,8 @@ function getSetTableEntry(card, number, set, rarity) {
 	return '<tr>' +
 		'<td>' + 
 			'<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
-			' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + card.title + '\')"> + </button>' +
-			' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + card.title + '\')">-</button>' +
+			' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
+			' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>' +
 		'</td>' +
 		'<td>' + number + '</td>' +
 		'<td>' + set + '</td>' +
@@ -171,7 +171,6 @@ function getCardPrices(set) {
 		var json = data.query.results.json;
 		if(json.status == 'success' && json.data.price_data.price_data.status == "success") {
 			var prices = json.data.price_data.price_data.data.prices; // Without YQL
-			console.log(prices.low);
 			var low = parseFloat(prices.low).toFixed(2);
 			var average = parseFloat(prices.average).toFixed(2);
 			var high = parseFloat(prices.high).toFixed(2);
