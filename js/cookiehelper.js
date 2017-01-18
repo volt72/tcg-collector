@@ -24,7 +24,10 @@ function getCookie(name, callback) {
 	if(session != undefined) {
 		session.defaultSession.cookies.get({ url: cookieUrl, name: name }, callback);
 	} else {
-		callback(undefined, [Cookies.get(name, { domain: cookieUrl })])
+		var cookie = Cookies.get(name, { domain: cookieUrl });
+		var cookies = [];
+		if(cookie != undefined) cookies.push(cookie);
+		callback(undefined, cookies);
 	}
 }
 
