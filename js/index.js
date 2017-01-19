@@ -16,7 +16,7 @@ $(document).ready(function() {
 
 	$.when(getCardList()).done(function() {
 		loadCollection();
-		loadDecks();
+		// loadDecks();
 		changeSection(0);
 	});
 

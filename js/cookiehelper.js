@@ -1,5 +1,3 @@
-console.log(window.process);
-
 var session = undefined;
 if(window.process != undefined && window.process.type == "renderer") {
 	session = require('electron').remote.session;
@@ -25,7 +23,6 @@ function getCookie(name, callback) {
 		session.defaultSession.cookies.get({ url: cookieUrl, name: name }, callback);
 	} else {
 		var cookie = Cookies.get(name, { path: '' });
-		console.log(cookie);
 		var cookies = [];
 		if(cookie != undefined) cookies.push({ value: cookie });
 		callback(undefined, cookies);
