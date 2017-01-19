@@ -1,4 +1,4 @@
-var cardCollection = []; // contains objects with set and card
+var cardCollection = []; // contains objects with set, deck and card
 
 function loadCollection() {
 	cardCollection = [];

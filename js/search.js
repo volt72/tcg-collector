@@ -1,7 +1,7 @@
 var searchDatabase = "", searchCollection = "";
 
 function searchForCards(page) {
-	if(sectionSelected == 2) return;
+	if(sectionSelected == 3) return;
 	if(page < 1) page = 1;
 	var value = document.getElementById("search-box").value;
 	var cardsContainer = $("#cards-container" + sectionSelected);
@@ -37,6 +37,50 @@ function searchForCards(page) {
 				cardsFound.push(cards[i]);
 			}
 		}
+	}
+
+	var sortMode = $('#sort-select').find('option:selected').attr('value');
+
+	if(sortMode == 1) { // A -Z
+		cardsFound.sort(function(a,b) {return (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0);} ); 
+	}
+	if(sortMode == 2) { // Z - A
+		cardsFound.sort(function(b,a) {return (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0);} ); 
+	}
+	if(sortMode == 3) { // First - Last
+		// array is already sorted this way
+	}
+	if(sortMode == 4) { // Last - First
+		cardsFound.reverse();
+	}
+	if(sortMode == 5) { // ($) Low - High
+		// var cardsChecked = 0;
+		// var requests = [];
+
+		// for(var i = 0; i < cardsFound.length; i++) {
+		// 	cardsFound[i].cost = 0;
+		// 	requests.push($.getJSON(getYqlFromUrl('https://yugiohprices.com/api/price_for_print_tag/' + cardCollection[i].set), function(data) {
+		// 		if(data == undefined || data.query.results == null) return;
+		// 		var json = data.query.results.json;
+		// 		if(json.status == 'success' && json.data.price_data.price_data.status == "success") {
+		// 			var prices = json.data.price_data.price_data.data.prices;
+		// 			low += parseFloat(prices.low);
+		// 			average += parseFloat(prices.average);
+		// 			high += parseFloat(prices.high);
+		// 			cardsChecked++;
+		// 			success = true;
+		// 			cardsContainer.html('(' + cardsChecked + '/' + cardsFound.length + ' checked)');
+		// 		}
+		// 	}));
+		// }
+
+		// var finished = false;
+
+		// $.when.apply($, requests).done(function() {
+		// 	finished = true;
+		// });
+
+		// while(!finish) {}
 	}
 
 	setPagination(page, parseInt(cardsFound.length / 24) + 1);
@@ -106,6 +150,7 @@ function getCardDetailsDOM(card) {
 				'<thead>' +
 					'<tr>' +
 						'<th>Owned</th>' +
+						// '<th>Deck</th>' +
 						'<th>#</th>' +
 						'<th>Set</th>' +
 						'<th>Rarity</th>' +
@@ -133,18 +178,37 @@ function getTableEntryDOM(name, value) {
 }
 
 function getSetTableEntry(card, number, set, rarity) {
-	return '<tr>' +
+	var html = '<tr>' +
 		'<td>' + 
 			'<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
 			' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
 			' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>' +
-		'</td>' +
+		'</td>';
+		// '<td><select class="form-control input-sm" id="deck-dropdown-' + number + '" ' + (decks.length == 0 ? 'disabled' : '') + '>';
+
+	// for(var i = 0; i < deckList.length; i++) {
+	// 	html += '<option>' + deckList[i].name + '</option>';
+	// }
+
+	// html += '</select></td>' +
+	html += 
 		'<td>' + number + '</td>' +
 		'<td>' + set + '</td>' +
 		'<td>' + rarity + '</td>' +
 		'<td><span id="price-' + number + '">...</span></td>' +
 	'</tr>';
+
+	return html;
 }
+
+// function setDeckDropdownEvent(collectionCard) {
+// 	for(var i = 0; i < card.setsEn.length; i++) {
+// 		var dropdown = $('#deck-dropdown-' + card.setsEn[i].number);
+// 		dropdown.on('change', function() {
+// 			collectionCard.deck = getDeck(dropdown.value());
+// 		});
+// 	}
+// }
 
 function arrayToString(array) {
 	var s = "";
