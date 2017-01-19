@@ -16,7 +16,7 @@ function setCookie(name, value) {
 			}
 		);
 	} else {
-		Cookies.set(name, value, { path: '', expires: 7 }); // Expires in 10 years
+		Cookies.set(name, value, { path: '', expires: 3650 }); // Expires in 10 years
 	}
 }
 
@@ -26,7 +26,7 @@ function getCookie(name, callback) {
 	} else {
 		var cookie = Cookies.get(name, { path: '' });
 		var cookies = [];
-		if(cookie != undefined) cookies.push(cookie);
+		if(cookie != undefined) cookies.push({ value: cookie });
 		callback(undefined, cookies);
 	}
 }
