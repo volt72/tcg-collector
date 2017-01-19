@@ -25,6 +25,7 @@ function getCookie(name, callback) {
 		session.defaultSession.cookies.get({ url: cookieUrl, name: name }, callback);
 	} else {
 		var cookie = Cookies.get(name, { path: '' });
+		console.log(cookie);
 		var cookies = [];
 		if(cookie != undefined) cookies.push({ value: cookie });
 		callback(undefined, cookies);
