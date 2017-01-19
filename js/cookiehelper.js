@@ -16,7 +16,7 @@ function setCookie(name, value) {
 			}
 		);
 	} else {
-		Cookies.set(name, value, { domain: cookieUrl, expires: 3650 }); // Expires in 10 years
+		Cookies.set(name, value, { path: '', expires: 3650 }); // Expires in 10 years
 	}
 }
 
@@ -24,7 +24,7 @@ function getCookie(name, callback) {
 	if(session != undefined) {
 		session.defaultSession.cookies.get({ url: cookieUrl, name: name }, callback);
 	} else {
-		var cookie = Cookies.get(name, { domain: cookieUrl });
+		var cookie = Cookies.get(name, { path: '' });
 		var cookies = [];
 		if(cookie != undefined) cookies.push(cookie);
 		callback(undefined, cookies);
@@ -35,7 +35,7 @@ function getAllCookies(callback) {
 	if(session != undefined) {
 		session.defaultSession.cookies.get({ url: cookieUrl }, callback);
 	} else {
-		callback(undefined, [Cookies.get({ domain: cookieUrl })])
+		callback(undefined, [Cookies.get({ path: '' })])
 	}
 }
 
@@ -43,7 +43,7 @@ function removeCookie(name) {
 	if(session != undefined) {
 		session.defaultSession.cookies.remove(cookieUrl, name, () => {});
 	} else {
-		Cookies.remove(name, { domain: cookieUrl });
+		Cookies.remove(name, { path: '' });
 	}
 }
 
