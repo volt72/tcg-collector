@@ -130,7 +130,7 @@ function getCardDetailsDOM(card) {
 		'<table class="table table-bordered">' +
 			'<tbody>';
 
-	if(card.title != undefined) 		html += getTableEntryDOM("Title", card.title);
+	if(card.title != undefined) 		html += getTableEntryDOM("Title", card.title, "http://yugioh.wikia.com/wiki/" + encodeURIComponent(card.title));
 	if(card.lore != undefined) 			html += getTableEntryDOM("Description", card.lore);
 	if(card.attribute != undefined) 	html += getTableEntryDOM("Attribute", card.attribute);
 	if(card.types != undefined) 		html += getTableEntryDOM("Type(s)", arrayToString(card.types));
@@ -173,8 +173,12 @@ function getCardDetailsDOM(card) {
 	return html;
 }
 
-function getTableEntryDOM(name, value) {
-	return "<tr><td><b>" + name + "</b></td><td>" + escapeHtml(value) + "</td></tr>";
+function getTableEntryDOM(name, value, link) {
+	var value = escapeHtml(value);
+	if(link != undefined) {
+		value = '<a href="' + link + '" target="_blank">' + value + '</a>';
+	}
+	return '<tr><td><b>' + name + '</b></td><td>' + value + '</td></tr>';
 }
 
 function getSetTableEntry(card, number, set, rarity) {
@@ -193,7 +197,7 @@ function getSetTableEntry(card, number, set, rarity) {
 	// html += '</select></td>' +
 	html += 
 		'<td>' + number + '</td>' +
-		'<td>' + set + '</td>' +
+		'<td><a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set) + '" target="_blank">' + set + '</a></td>' +
 		'<td>' + rarity + '</td>' +
 		'<td><span id="price-' + number + '">...</span></td>' +
 	'</tr>';
