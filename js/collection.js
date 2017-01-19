@@ -21,7 +21,7 @@ function addToCollection(set, title) {
 	cardCollection.push({ set: set, card: card });
 	setCookie("card_collection", JSON.stringify(collectionToArray()));
 	updateCollectionElements(card);
-	if(sectionSelected == 1) searchForCards();
+	if(sectionSelected == 1) searchForCards(1);
 }
 
 function removeFromCollection(set, title) {
@@ -37,7 +37,7 @@ function removeFromCollection(set, title) {
 	}
 	setCookie("card_collection", JSON.stringify(collectionToArray()));
 	updateCollectionElements(card);
-	if(sectionSelected == 1) searchForCards();
+	if(sectionSelected == 1) searchForCards(1);
 }
 
 function updateCollectionElements(card) {

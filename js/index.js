@@ -54,7 +54,6 @@ function getStatisticsHtml() {
 
 	var monster = 0, spell = 0, trap = 0;
 	for(var i = 0; i < cardCollection.length; i++) {
-		console.log(cardCollection[i]);
 		if(cardCollection[i].card.attribute == "Spell") {
 			spell++;	
 		} else if(cardCollection[i].card.attribute == "Trap") {
