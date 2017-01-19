@@ -16,8 +16,7 @@ function setCookie(name, value) {
 			}
 		);
 	} else {
-		expiryDate = new Date(new Date().getTime() + 2147483647);
-		Cookies.set(name, value, { domain: cookieUrl, expires: expiryDate });
+		Cookies.set(name, value, { domain: cookieUrl, expires: 3650 }); // Expires in 10 years
 	}
 }
 
