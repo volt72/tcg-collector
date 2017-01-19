@@ -1,6 +1,7 @@
 var searchDatabase = "", searchCollection = "";
 
 function searchForCards(page) {
+	if(sectionSelected == 2) return;
 	if(page < 1) page = 1;
 	var value = document.getElementById("search-box").value;
 	var cardsContainer = $("#cards-container" + sectionSelected);
@@ -177,6 +178,37 @@ function getCardPrices(set) {
 			$('#price-' + set).html("$" + low + " / <b>$" + average + "</b> / $" + high);
 		} else {
 			$('#price-' + set).html("n/a");
+		}
+	});
+}
+
+function getCollectionPrice() {
+	var low = 0, average = 0, high = 0;
+	var success = false;
+	var cardsChecked = 0;
+	var requests = [];
+
+	for(var i = 0; i < cardCollection.length; i++) {
+		requests.push($.getJSON(getYqlFromUrl('https://yugiohprices.com/api/price_for_print_tag/' + cardCollection[i].set), function(data) {
+			if(data == undefined || data.query.results == null) return;
+			var json = data.query.results.json;
+			if(json.status == 'success' && json.data.price_data.price_data.status == "success") {
+				var prices = json.data.price_data.price_data.data.prices;
+				low += parseFloat(prices.low);
+				average += parseFloat(prices.average);
+				high += parseFloat(prices.high);
+				cardsChecked++;
+				success = true;
+				$('#prices-total').html('(' + cardsChecked + '/' + cardCollection.length + ' checked)');
+			}
+		}));
+	}
+
+	$.when.apply($, requests).done(function() {
+		if(success) {
+			$('#prices-total').html("$" + low.toFixed(2) + " / <b>$" + average.toFixed(2) + "</b> / $" + high.toFixed(2));
+		} else {
+			$('#prices-total').html("n/a");
 		}
 	});
 }

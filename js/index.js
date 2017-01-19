@@ -40,7 +40,39 @@ function changeSection(i) {
 	if(i == 0) $('#search-box').val(searchDatabase);
 	if(i == 1) $('#search-box').val(searchCollection);
 
-	searchForCards(1);
+	if(i != 2) {
+		searchForCards(1);
+	} else {
+		$('#cards-container2').html(getStatisticsHtml());
+	}
+}
+
+function getStatisticsHtml() {
+	var html = "";
+
+	html += 'Total cards in collection: ' + cardCollection.length + '<br>';
+
+	var monster = 0, spell = 0, trap = 0;
+	for(var i = 0; i < cardCollection.length; i++) {
+		console.log(cardCollection[i]);
+		if(cardCollection[i].card.attribute == "Spell") {
+			spell++;	
+		} else if(cardCollection[i].card.attribute == "Trap") {
+			trap++;
+		} else {
+			monster++;
+		}
+	}
+
+	html += 'Monster cards: ' + monster + '<br>';
+	html += 'Spell cards: ' + spell + '<br>';
+	html += 'Trap cards: ' + trap + '<br>';
+
+	html += 'Total collection value: <span id="prices-total">...</span><br>';
+
+	getCollectionPrice();
+
+	return html;
 }
 
 function clearSearchBox() {
