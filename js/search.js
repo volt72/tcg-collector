@@ -130,18 +130,6 @@ function searchForCards(page, value) {
 			)
 		);
 
-		// cardsContainer.append(
-		// 	'<div class="card-container">'+ 
-		// 		'<div class="card-img-wrapper">' + 
-		// 			// "<a href='#' data-featherlight=\"" + getCardDetailsDOM(cardFound) + "\">" +
-		// 			'<a href="#" onclick="showCardDetails(\'' + escapeHtml(cardFound.title) + '\')">' +
-		// 				'<img src="' + cardFound.imageUrl + '"><br>' + 
-		// 				'<span class="badge badge-pill badge-success coll-number-' + cardFound.id + '"></span> ' + 
-		// 				cardFound.title + 
-		// 			'</a>' + 
-		// 		'</div>' + 
-		// 	'</div>'
-		// );
 		updateCollectionElements(cardFound);
 	}
 }
@@ -175,6 +163,7 @@ function getCardDetailsDOM(card) {
 	if(card.level != undefined) 		tbody.append(getTableEntryDOM("Level", card.level));
 	if(card.atk != undefined) 			tbody.append(getTableEntryDOM("ATK", card.atk));
 	if(card.def != undefined) 			tbody.append(getTableEntryDOM("DEF", card.def));
+	if(card.statusTcgAdv != undefined)  tbody.append(getTableEntryDOM("Status (TCG Adv.)", card.statusTcgAdv, undefined, true));
 	if(card.number != undefined) 		tbody.append(getTableEntryDOM("Number", card.number));
 
 	var divTableSets = $('<div/>', { class: 'table-sets' }).appendTo(divDetails);
@@ -200,67 +189,17 @@ function getCardDetailsDOM(card) {
 	}
 
 	return divDetails;
-
-	// var html = '<div class="card-details">' + 
-	// 	'<div class="card-image">' + 
-	// 		'<img src="' + card.imageUrl + '">' +
-	// 		// '<button type="button" class="btn btn-sm btn-success" onclick="addToCollection(\'' + card.title + '\')">Add</button>' +
-	// 		// ' <span class="badge badge-pill badge-success coll-number-' + card.id + '"></span>' + 
-	// 		// ' <button type="button" class="btn btn-sm btn-danger coll-add-' + card.id + '" onclick="removeFromCollection(\'' + card.title + '\')">Remove</button>' +
-	// 	'</div>' +
-	// 	'<div class="table-details">' +
-	// 	'<table class="table table-bordered">' +
-	// 		'<tbody>';
-
-	// if(card.title != undefined) 		html += getTableEntryDOM("Title", card.title, "http://yugioh.wikia.com/wiki/" + encodeURIComponent(card.title));
-	// if(card.lore != undefined) 			html += getTableEntryDOM("Description", card.lore);
-	// if(card.attribute != undefined) 	html += getTableEntryDOM("Attribute", card.attribute);
-	// if(card.types != undefined) 		html += getTableEntryDOM("Type(s)", arrayToString(card.types));
-	// if(card.level != undefined) 		html += getTableEntryDOM("Level", card.level);
-	// if(card.atk != undefined) 			html += getTableEntryDOM("ATK", card.atk);
-	// if(card.def != undefined) 			html += getTableEntryDOM("DEF", card.def);
-	// // if(card.archetypes != undefined) 	html += getTableEntryDOM("Archetype(s)", arrayToString(card.archetypes));
-	// // if(card.actions != undefined) 		html += getTableEntryDOM("Action(s)", arrayToString(card.actions));
-	// if(card.number != undefined) 		html += getTableEntryDOM("Number", card.number);
-				
-	// html += '</tbody>' +
-	// 	'</table>' +
-	// 	'</div>' +
-
-	// 	'<div class="table-sets">' +
-	// 		'<table class="table table-bordered">' +
-	// 			'<thead>' +
-	// 				'<tr>' +
-	// 					'<th>Owned</th>' +
-	// 					// '<th>Deck</th>' +
-	// 					'<th>#</th>' +
-	// 					'<th>Set</th>' +
-	// 					'<th>Rarity</th>' +
-	// 					'<th>Price</th>' +
-	// 				'</tr>' +
-	// 			'</thead>' +
-	// 			'<tbody>';
-
-	// if(card.setsEn != undefined) {
-	// 	for(var i = 0; i < card.setsEn.length; i++) {
-	// 		html += getSetTableEntry(card, card.setsEn[i].number, card.setsEn[i].setName, card.setsEn[i].rarity);
-	// 	}
-	// }
-
-	// html += '</tbody>' +
-	// 		'</table>' +
-	// 	'</div>' +
-	// '</div>';
-
-	// return html;
 }
 
-function getTableEntryDOM(name, value, link) {
+function getTableEntryDOM(name, value, link, bold) {
 	var value = escapeHtml(value);
-	if(link != undefined) {
-		value = '<a href="' + link + '" target="_blank">' + value + '</a>';
-	}
-	return '<tr><td><b>' + name + '</b></td><td>' + value + '</td></tr>';
+	if(link != undefined) value = '<a href="' + link + '" target="_blank">' + value + '</a>';
+	var color = undefined;
+	if(value == "Unlimited") color = 'rgb(150, 255, 150)';
+	if(value == "Limited") color = 'rgb(150, 255, 255)';
+	if(value == "Forbidden") color = 'rgb(255, 150, 150)';
+	if(bold) value = '<b>' + value + '</b>';
+	return '<tr><td><b>' + name + '</b></td><td ' + (color != undefined ? 'style="background-color:' + color + '"' : '') + '>' + value + '</td></tr>';
 }
 
 function getSetTableEntry(card, number, set, rarity) {
@@ -281,9 +220,6 @@ function getSetTableEntry(card, number, set, rarity) {
 			click: function() { removeFromCollection(number, card.title) }
 		}).html('-'))
 
-			// '<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
-			// ' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
-			// ' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>'
 		.appendTo(row);
 
 	var tdNumber = $('<td/>').append(number).appendTo(row);
@@ -302,78 +238,12 @@ function getSetTableEntry(card, number, set, rarity) {
 	var tdPrice = $('<td/>').append('<span id="price-' + number + '">...</span>').appendTo(row);
 
 	return row;
-
-	// var row = document.createElement('tr');
-
-	// var tdCollection = document.createElement('td');
-	// tdCollection.innerHTML = 
-	// 	'<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
-	// 	' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
-	// 	' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>';
-	// row.appendChild(tdCollection);
-
-	// var tdNumber = document.createElement('td');
-	// tdNumber.innerHTML = number;
-	// row.appendChild(tdNumber)
-
-	// var tdSet = document.createElement('td');
-	// tdSet.innerHTML = '<a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set) + '" target="_blank">' + set + '</a> &nbsp;';
-	// var tdSetAnchor = document.createElement('a');
-	// tdSetAnchor.href = '#';
-	// tdSetAnchor.innerHTML = '<span class="glyphicon glyphicon-search"></span>';
-	// // tdSetAnchor.onclick = function() { searchForSet(set); };
-	// tdSetAnchor.setAttribute('onclick', 'searchForSet(\"' + set + '\")');
-	// tdSet.appendChild(tdSetAnchor);
-	// row.appendChild(tdSet);
-
-	// var tdRarity = document.createElement('td');
-	// tdRarity.innerHTML = rarity;
-	// row.appendChild(tdRarity);
-
-	// var tdPrice = document.createElement('td');
-	// tdPrice.innerHTML = '<span id="price-' + number + '">...</span>';
-	// row.appendChild(tdPrice);
-
-	// console.log(row.wrapAll('<div>').parent().html());
-	// return row.wrapAll('<div>').parent().html();
-
-	// var html = '<tr>' +
-	// 	'<td>' + 
-	// 		'<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
-	// 		' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
-	// 		' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>' +
-	// 	'</td>';
-	// 	// '<td><select class="form-control input-sm" id="deck-dropdown-' + number + '" ' + (decks.length == 0 ? 'disabled' : '') + '>';
-
-	// // for(var i = 0; i < deckList.length; i++) {
-	// // 	html += '<option>' + deckList[i].name + '</option>';
-	// // }
-
-	// // html += '</select></td>' +
-	// html += 
-	// 	'<td>' + number + '</td>' +
-	// 	'<td><a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set) + '" target="_blank">' + set + '</a>' + 
-	// 		' &nbsp;<a href="#" onclick="searchForSet(\'' + escapeHtml(set) +'\')"><span class="glyphicon glyphicon-search"></span></a></td>' +
-	// 	'<td>' + rarity + '</td>' +
-	// 	'<td><span id="price-' + number + '">...</span></td>' +
-	// '</tr>';
-
-	// return html;
 }
 
 function searchForSet(setName) {
 	$.featherlight.close();
 	searchForCards(1, 'set:' + setName);
 }
-
-// function setDeckDropdownEvent(collectionCard) {
-// 	for(var i = 0; i < card.setsEn.length; i++) {
-// 		var dropdown = $('#deck-dropdown-' + card.setsEn[i].number);
-// 		dropdown.on('change', function() {
-// 			collectionCard.deck = getDeck(dropdown.value());
-// 		});
-// 	}
-// }
 
 function arrayToString(array) {
 	var s = "";
