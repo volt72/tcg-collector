@@ -101,3 +101,13 @@ function collectionToArray() {
 	}
 	return array;
 }
+
+function getNumberUniqueCards() {
+	var uniqueCards = [];
+	for(var i = 0; i < cardCollection.length; i++) {
+		if($.inArray(cardCollection[i].card, uniqueCards) == -1) {
+			uniqueCards.push(cardCollection[i].card);
+		}
+	}
+	return uniqueCards.length;
+}

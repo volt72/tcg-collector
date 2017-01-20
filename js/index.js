@@ -56,6 +56,8 @@ function getStatisticsHtml() {
 
 	html += 'Total cards in collection: ' + cardCollection.length + '<br>';
 
+	html += 'Unique cards: ' + getNumberUniqueCards() + '<br>';
+
 	var monster = 0, spell = 0, trap = 0;
 	for(var i = 0; i < cardCollection.length; i++) {
 		if(cardCollection[i].card.attribute == "Spell") {
