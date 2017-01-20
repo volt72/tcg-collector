@@ -1,11 +1,14 @@
 var searchDatabase = "", searchCollection = "";
 
-function searchForCards(page) {
+function searchForCards(page, value) {
 	if(sectionSelected == 3) return;
 	if(page < 1) page = 1;
-	var value = document.getElementById("search-box").value;
+	if(value == undefined) {
+		value = document.getElementById("search-box").value;
+	} else {
+		document.getElementById("search-box").value = value;
+	}
 	var cardsContainer = $("#cards-container" + sectionSelected);
-	// cardsContainer = document.getElementById("cards-container" + sectionSelected);
 	cardsContainer.html("");
 
 	// if(value == "" || cardsContainer == undefined) return;
@@ -14,17 +17,39 @@ function searchForCards(page) {
 
 	if(sectionSelected == 0) {
 		for(var i = 0; i < cardList.length; i++) {
-			if(cardList[i].title.toLowerCase().includes(value.toLowerCase())) {
-				cardsFound.push(cardList[i]);
+			var card = cardList[i];
+			if(value.startsWith('set:') && card.setsEn != undefined) {
+				for(var s = 0; s < card.setsEn.length; s++) {
+					if(card.setsEn[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
+						cardsFound.push(card);
+						break;
+					}
+				}
+			} else {
+				if(card.title.toLowerCase().includes(value.toLowerCase())) {
+					cardsFound.push(card);
+				}
 			}
 		}
 		searchDatabase = value;
 	}
 	if(sectionSelected == 1) {
 		for(var i = 0; i < cardCollection.length; i++) {
-			if(cardCollection[i].card.title.toLowerCase().includes(value.toLowerCase())) {
-				if($.inArray(cardCollection[i].card, cardsFound) == -1) {
-					cardsFound.push(cardCollection[i].card);
+			var card = cardCollection[i].card;
+			if(value.startsWith('set:') && card.setsEn != undefined) {
+				for(var s = 0; s < card.setsEn.length; s++) {
+					if(card.setsEn[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
+						if($.inArray(card, cardsFound) == -1) {
+							cardsFound.push(card);
+						}
+						break;
+					}
+				}
+			} else {
+				if(card.title.toLowerCase().includes(value.toLowerCase())) {
+					if($.inArray(card, cardsFound) == -1) {
+						cardsFound.push(card);
+					}
 				}
 			}
 		}
@@ -90,18 +115,33 @@ function searchForCards(page) {
 		if(i >= cardsFound.length) break;
 
 		var cardFound = cardsFound[i];
+
+		var title = cardFound.title;
+
 		cardsContainer.append(
-			'<div class="card-container">'+ 
-				'<div class="card-img-wrapper">' + 
-					// "<a href='#' data-featherlight=\"" + getCardDetailsDOM(cardFound) + "\">" +
-					'<a href="#" onclick="showCardDetails(\'' + escapeHtml(cardFound.title) + '\')">' +
-						'<img src="' + cardFound.imageUrl + '"><br>' + 
-						'<span class="badge badge-pill badge-success coll-number-' + cardFound.id + '"></span> ' + 
-						cardFound.title + 
-					'</a>' + 
-				'</div>' + 
-			'</div>'
+			$('<div/>', { class: 'card-container' }).append(
+				$('<div/>', { class: 'card-img-wrapper' }).append(
+					$('<a/>', { href: '#', click: function() { showCardDetails($(this).attr('card')) }}).attr('card', title)
+						.append($('<img/>', { src: cardFound.imageUrl }))
+						.append($('<br>'))
+						.append($('<span/>', { class: 'badge badge-pill badge-success coll-number-' + cardFound.id }))
+						.append(' ' + cardFound.title)
+				)
+			)
 		);
+
+		// cardsContainer.append(
+		// 	'<div class="card-container">'+ 
+		// 		'<div class="card-img-wrapper">' + 
+		// 			// "<a href='#' data-featherlight=\"" + getCardDetailsDOM(cardFound) + "\">" +
+		// 			'<a href="#" onclick="showCardDetails(\'' + escapeHtml(cardFound.title) + '\')">' +
+		// 				'<img src="' + cardFound.imageUrl + '"><br>' + 
+		// 				'<span class="badge badge-pill badge-success coll-number-' + cardFound.id + '"></span> ' + 
+		// 				cardFound.title + 
+		// 			'</a>' + 
+		// 		'</div>' + 
+		// 	'</div>'
+		// );
 		updateCollectionElements(cardFound);
 	}
 }
@@ -119,58 +159,100 @@ function showCardDetails(title) {
 }
 
 function getCardDetailsDOM(card) {
-	var html = '<div class="card-details">' + 
-		'<div class="card-image">' + 
-			'<img src="' + card.imageUrl + '">' +
-			// '<button type="button" class="btn btn-sm btn-success" onclick="addToCollection(\'' + card.title + '\')">Add</button>' +
-			// ' <span class="badge badge-pill badge-success coll-number-' + card.id + '"></span>' + 
-			// ' <button type="button" class="btn btn-sm btn-danger coll-add-' + card.id + '" onclick="removeFromCollection(\'' + card.title + '\')">Remove</button>' +
-		'</div>' +
-		'<div class="table-details">' +
-		'<table class="table table-bordered">' +
-			'<tbody>';
+	var divDetails = $('<div/>', { class: 'card-details' })
+	var divCardImage = $('<div/>', { class: 'card-image '})
+		.append($('<img/>', { src: card.imageUrl }))
+		.appendTo(divDetails);
 
-	if(card.title != undefined) 		html += getTableEntryDOM("Title", card.title, "http://yugioh.wikia.com/wiki/" + encodeURIComponent(card.title));
-	if(card.lore != undefined) 			html += getTableEntryDOM("Description", card.lore);
-	if(card.attribute != undefined) 	html += getTableEntryDOM("Attribute", card.attribute);
-	if(card.types != undefined) 		html += getTableEntryDOM("Type(s)", arrayToString(card.types));
-	if(card.level != undefined) 		html += getTableEntryDOM("Level", card.level);
-	if(card.atk != undefined) 			html += getTableEntryDOM("ATK", card.atk);
-	if(card.def != undefined) 			html += getTableEntryDOM("DEF", card.def);
-	// if(card.archetypes != undefined) 	html += getTableEntryDOM("Archetype(s)", arrayToString(card.archetypes));
-	// if(card.actions != undefined) 		html += getTableEntryDOM("Action(s)", arrayToString(card.actions));
-	if(card.number != undefined) 		html += getTableEntryDOM("Number", card.number);
-				
-	html += '</tbody>' +
-		'</table>' +
-		'</div>' +
+	var divTableDetails = $('<div/>', { class: 'table-details' }).appendTo(divDetails);
+	var tableDetails = $('<table/>', { class: 'table table-bordered' }).appendTo(divTableDetails);
+	var tbody = $('<tbody/>').appendTo(tableDetails);
 
-		'<div class="table-sets">' +
-			'<table class="table table-bordered">' +
-				'<thead>' +
-					'<tr>' +
-						'<th>Owned</th>' +
-						// '<th>Deck</th>' +
-						'<th>#</th>' +
-						'<th>Set</th>' +
-						'<th>Rarity</th>' +
-						'<th>Price</th>' +
-					'</tr>' +
-				'</thead>' +
-				'<tbody>';
+	if(card.title != undefined) 		tbody.append(getTableEntryDOM("Title", card.title, "http://yugioh.wikia.com/wiki/" + encodeURIComponent(card.title)));
+	if(card.lore != undefined) 			tbody.append(getTableEntryDOM("Description", card.lore));
+	if(card.attribute != undefined) 	tbody.append(getTableEntryDOM("Attribute", card.attribute));
+	if(card.types != undefined) 		tbody.append(getTableEntryDOM("Type(s)", arrayToString(card.types)));
+	if(card.level != undefined) 		tbody.append(getTableEntryDOM("Level", card.level));
+	if(card.atk != undefined) 			tbody.append(getTableEntryDOM("ATK", card.atk));
+	if(card.def != undefined) 			tbody.append(getTableEntryDOM("DEF", card.def));
+	if(card.number != undefined) 		tbody.append(getTableEntryDOM("Number", card.number));
+
+	var divTableSets = $('<div/>', { class: 'table-sets' }).appendTo(divDetails);
+	var tableSets = $('<table/>', { class: 'table table-bordered'}).appendTo(divTableSets);
+	tableSets.append(
+		'<thead>' +
+			'<tr>' +
+				'<th>Owned</th>' +
+				'<th>#</th>' +
+				'<th>Set</th>' +
+				'<th>Rarity</th>' +
+				'<th>Price</th>' +
+			'</tr>' +
+		'</thead>'
+	);
+
+	var tBody = $('<tbody/>').appendTo(tableSets);
 
 	if(card.setsEn != undefined) {
 		for(var i = 0; i < card.setsEn.length; i++) {
-			html += getSetTableEntry(card, card.setsEn[i].number, card.setsEn[i].setName, card.setsEn[i].rarity);
+			tBody.append(getSetTableEntry(card, card.setsEn[i].number, card.setsEn[i].setName, card.setsEn[i].rarity));
 		}
 	}
 
-	html += '</tbody>' +
-			'</table>' +
-		'</div>' +
-	'</div>';
+	return divDetails;
 
-	return html;
+	// var html = '<div class="card-details">' + 
+	// 	'<div class="card-image">' + 
+	// 		'<img src="' + card.imageUrl + '">' +
+	// 		// '<button type="button" class="btn btn-sm btn-success" onclick="addToCollection(\'' + card.title + '\')">Add</button>' +
+	// 		// ' <span class="badge badge-pill badge-success coll-number-' + card.id + '"></span>' + 
+	// 		// ' <button type="button" class="btn btn-sm btn-danger coll-add-' + card.id + '" onclick="removeFromCollection(\'' + card.title + '\')">Remove</button>' +
+	// 	'</div>' +
+	// 	'<div class="table-details">' +
+	// 	'<table class="table table-bordered">' +
+	// 		'<tbody>';
+
+	// if(card.title != undefined) 		html += getTableEntryDOM("Title", card.title, "http://yugioh.wikia.com/wiki/" + encodeURIComponent(card.title));
+	// if(card.lore != undefined) 			html += getTableEntryDOM("Description", card.lore);
+	// if(card.attribute != undefined) 	html += getTableEntryDOM("Attribute", card.attribute);
+	// if(card.types != undefined) 		html += getTableEntryDOM("Type(s)", arrayToString(card.types));
+	// if(card.level != undefined) 		html += getTableEntryDOM("Level", card.level);
+	// if(card.atk != undefined) 			html += getTableEntryDOM("ATK", card.atk);
+	// if(card.def != undefined) 			html += getTableEntryDOM("DEF", card.def);
+	// // if(card.archetypes != undefined) 	html += getTableEntryDOM("Archetype(s)", arrayToString(card.archetypes));
+	// // if(card.actions != undefined) 		html += getTableEntryDOM("Action(s)", arrayToString(card.actions));
+	// if(card.number != undefined) 		html += getTableEntryDOM("Number", card.number);
+				
+	// html += '</tbody>' +
+	// 	'</table>' +
+	// 	'</div>' +
+
+	// 	'<div class="table-sets">' +
+	// 		'<table class="table table-bordered">' +
+	// 			'<thead>' +
+	// 				'<tr>' +
+	// 					'<th>Owned</th>' +
+	// 					// '<th>Deck</th>' +
+	// 					'<th>#</th>' +
+	// 					'<th>Set</th>' +
+	// 					'<th>Rarity</th>' +
+	// 					'<th>Price</th>' +
+	// 				'</tr>' +
+	// 			'</thead>' +
+	// 			'<tbody>';
+
+	// if(card.setsEn != undefined) {
+	// 	for(var i = 0; i < card.setsEn.length; i++) {
+	// 		html += getSetTableEntry(card, card.setsEn[i].number, card.setsEn[i].setName, card.setsEn[i].rarity);
+	// 	}
+	// }
+
+	// html += '</tbody>' +
+	// 		'</table>' +
+	// 	'</div>' +
+	// '</div>';
+
+	// return html;
 }
 
 function getTableEntryDOM(name, value, link) {
@@ -182,27 +264,106 @@ function getTableEntryDOM(name, value, link) {
 }
 
 function getSetTableEntry(card, number, set, rarity) {
-	var html = '<tr>' +
-		'<td>' + 
-			'<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
-			' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
-			' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>' +
-		'</td>';
-		// '<td><select class="form-control input-sm" id="deck-dropdown-' + number + '" ' + (decks.length == 0 ? 'disabled' : '') + '>';
+	var row = $('<tr/>');
 
-	// for(var i = 0; i < deckList.length; i++) {
-	// 	html += '<option>' + deckList[i].name + '</option>';
-	// }
+	var tdCollection = $('<td/>')
+		.append($('<span/>', { class: 'badge badge-pill badge-success coll-number-details-' + number }).html(0))
+		.append(' ')
+		.append($('<button/>', {
+			type: 'button',
+			class: 'btn btn-xs btn-success',
+			click: function() { addToCollection(number, card.title) }
+		}).html('+'))
+		.append(' ')
+		.append($('<button/>', {
+			type: 'button',
+			class: 'btn btn-xs btn-danger coll-remove-' + number,
+			click: function() { removeFromCollection(number, card.title) }
+		}).html('-'))
 
-	// html += '</select></td>' +
-	html += 
-		'<td>' + number + '</td>' +
-		'<td><a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set) + '" target="_blank">' + set + '</a></td>' +
-		'<td>' + rarity + '</td>' +
-		'<td><span id="price-' + number + '">...</span></td>' +
-	'</tr>';
+			// '<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
+			// ' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
+			// ' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>'
+		.appendTo(row);
 
-	return html;
+	var tdNumber = $('<td/>').append(number).appendTo(row);
+
+	var tdSet = $('<td/>')
+		.append('<a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set) + '" target="_blank">' + set + '</a> &nbsp;')
+		.append(
+			$('<a/>', {
+				href: '#',
+				click: function() { searchForSet(set) }
+			}).append('<span class="glyphicon glyphicon-search"></span>')
+		).appendTo(row);
+
+	var tdRarity = $('<td/>').append(rarity).appendTo(row);
+
+	var tdPrice = $('<td/>').append('<span id="price-' + number + '">...</span>').appendTo(row);
+
+	return row;
+
+	// var row = document.createElement('tr');
+
+	// var tdCollection = document.createElement('td');
+	// tdCollection.innerHTML = 
+	// 	'<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
+	// 	' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
+	// 	' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>';
+	// row.appendChild(tdCollection);
+
+	// var tdNumber = document.createElement('td');
+	// tdNumber.innerHTML = number;
+	// row.appendChild(tdNumber)
+
+	// var tdSet = document.createElement('td');
+	// tdSet.innerHTML = '<a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set) + '" target="_blank">' + set + '</a> &nbsp;';
+	// var tdSetAnchor = document.createElement('a');
+	// tdSetAnchor.href = '#';
+	// tdSetAnchor.innerHTML = '<span class="glyphicon glyphicon-search"></span>';
+	// // tdSetAnchor.onclick = function() { searchForSet(set); };
+	// tdSetAnchor.setAttribute('onclick', 'searchForSet(\"' + set + '\")');
+	// tdSet.appendChild(tdSetAnchor);
+	// row.appendChild(tdSet);
+
+	// var tdRarity = document.createElement('td');
+	// tdRarity.innerHTML = rarity;
+	// row.appendChild(tdRarity);
+
+	// var tdPrice = document.createElement('td');
+	// tdPrice.innerHTML = '<span id="price-' + number + '">...</span>';
+	// row.appendChild(tdPrice);
+
+	// console.log(row.wrapAll('<div>').parent().html());
+	// return row.wrapAll('<div>').parent().html();
+
+	// var html = '<tr>' +
+	// 	'<td>' + 
+	// 		'<span class="badge badge-pill badge-success coll-number-details-' + number + '">0</span>' +
+	// 		' <button type="button" class="btn btn-xs btn-success" onclick="addToCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')"> + </button>' +
+	// 		' <button type="button" class="btn btn-xs btn-danger coll-remove-' + number + '" onclick="removeFromCollection(\'' + number + '\', \'' + escapeHtml(card.title) + '\')">-</button>' +
+	// 	'</td>';
+	// 	// '<td><select class="form-control input-sm" id="deck-dropdown-' + number + '" ' + (decks.length == 0 ? 'disabled' : '') + '>';
+
+	// // for(var i = 0; i < deckList.length; i++) {
+	// // 	html += '<option>' + deckList[i].name + '</option>';
+	// // }
+
+	// // html += '</select></td>' +
+	// html += 
+	// 	'<td>' + number + '</td>' +
+	// 	'<td><a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set) + '" target="_blank">' + set + '</a>' + 
+	// 		' &nbsp;<a href="#" onclick="searchForSet(\'' + escapeHtml(set) +'\')"><span class="glyphicon glyphicon-search"></span></a></td>' +
+	// 	'<td>' + rarity + '</td>' +
+	// 	'<td><span id="price-' + number + '">...</span></td>' +
+	// '</tr>';
+
+	// return html;
+}
+
+function searchForSet(setName) {
+	$.featherlight.close();
+	searchForCards(1, 'set:' + setName);
 }
 
 // function setDeckDropdownEvent(collectionCard) {

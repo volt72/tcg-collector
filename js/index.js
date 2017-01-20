@@ -14,6 +14,10 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$('#sort-select').on('change', function() {
+		searchForCards(1, $('search-form').val());
+	});
+
 	$.when(getCardList()).done(function() {
 		loadCollection();
 		// loadDecks();
