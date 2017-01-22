@@ -2,24 +2,34 @@ var cardCollection = []; // contains objects with set, deck and card
 
 function loadCollection() {
 	cardCollection = [];
-	getCookie("card_collection", (error, cookies) => {
-		if(cookies != undefined && cookies.length > 0 && cookies[0] != undefined) {
-			var collection = cookies[0].value;
-			var json = JSON.parse(collection);
-			for(var i = 0; i < json.length; i++) {
-				var set = json[i].set;
-				var card = getCardFromTitle(json[i].title);
-				cardCollection.push({ set: set, card: card });
-				updateCollectionElements(card);
-			}
-		}
-	})
+	// getCookie("card_collection", (error, cookies) => {
+	// 	if(cookies != undefined && cookies.length > 0 && cookies[0] != undefined) {
+	// 		var collection = cookies[0].value;
+	// 		var json = JSON.parse(collection);
+	// 		for(var i = 0; i < json.length; i++) {
+	// 			var set = json[i].set;
+	// 			var card = getCardFromTitle(json[i].title);
+	// 			cardCollection.push({ set: set, card: card });
+	// 			updateCollectionElements(card);
+	// 		}
+	// 	}
+	// })
+	var item = localStorage.getItem("card_collection");
+	if(item == undefined) return;
+	var json = JSON.parse(item);
+	for(var i = 0; i < json.length; i++) {
+		var set = json[i].set;
+		var card = getCardFromSet(set);
+		cardCollection.push({ set: set, card: card });
+		updateCollectionElements(card);
+	}
 }
 
 function addToCollection(set, title) {
 	var card = getCardFromTitle(title);
 	cardCollection.push({ set: set, card: card });
-	setCookie("card_collection", JSON.stringify(collectionToArray()));
+	// setCookie("card_collection", JSON.stringify(collectionToArray()));
+	localStorage.setItem("card_collection", JSON.stringify(collectionToArray()));
 	updateCollectionElements(card);
 	if(sectionSelected == 1) searchForCards(1);
 }
@@ -35,7 +45,8 @@ function removeFromCollection(set, title) {
 	if(lastIndex != -1) {
 		cardCollection.splice(lastIndex, 1);
 	}
-	setCookie("card_collection", JSON.stringify(collectionToArray()));
+	// setCookie("card_collection", JSON.stringify(collectionToArray()));
+	localStorage.setItem("card_collection", JSON.stringify(collectionToArray()));
 	updateCollectionElements(card);
 	if(sectionSelected == 1) searchForCards(1);
 }
@@ -97,7 +108,7 @@ function getSetNumberInCollection(set) {
 function collectionToArray() {
 	var array = [];
 	for(var i = 0; i < cardCollection.length; i++) {
-		array.push({ set: cardCollection[i].set, title: cardCollection[i].card.title });
+		array.push({ set: cardCollection[i].set });
 	}
 	return array;
 }

@@ -41,3 +41,15 @@ function getCardFromTitle(title) {
 		}
 	}
 }
+
+function getCardFromSet(set) {
+	for(var i = 0; i < cardList.length; i++) {
+		if(cardList[i].setsEn == undefined) break;
+		for(var s = 0; s < cardList[i].setsEn.length; s++) {
+			if(cardList[i].setsEn[s].number == set) {
+				return cardList[i];
+			}
+		}
+	}
+	return undefined;
+}
