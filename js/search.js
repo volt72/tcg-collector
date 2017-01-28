@@ -1,19 +1,22 @@
-var searchDatabase = "", searchCollection = "";
+// var searchDatabase = "", searchCollection = "";
+var searchSection = { 0: "", 1: "", 2: "", 3: "" };
+var deckNameRecent;
 
 function searchForCards(page, value) {
 	if(sectionSelected == 3) return;
 	if(page < 1) page = 1;
 	if(value == undefined) {
-		value = document.getElementById("search-box").value;
+		value = document.getElementById('search-box').value;
 	} else {
-		document.getElementById("search-box").value = value;
+		document.getElementById('search-box').value = value;
 	}
-	var cardsContainer = $("#cards-container" + sectionSelected);
-	cardsContainer.html("");
+	var cardsContainer = $('#cards-container' + sectionSelected);
+	cardsContainer.html('');
+	searchSection[sectionSelected] = value;
 
 	// if(value == "" || cardsContainer == undefined) return;
 
-	var cardsFound = [];
+	var objectsFound = [];
 
 	if(sectionSelected == 0) {
 		for(var i = 0; i < cardList.length; i++) {
@@ -21,17 +24,16 @@ function searchForCards(page, value) {
 			if(value.startsWith('set:') && card.setsEn != undefined) {
 				for(var s = 0; s < card.setsEn.length; s++) {
 					if(card.setsEn[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
-						cardsFound.push(card);
+						objectsFound.push(card);
 						break;
 					}
 				}
 			} else {
 				if(card.title.toLowerCase().includes(value.toLowerCase())) {
-					cardsFound.push(card);
+					objectsFound.push(card);
 				}
 			}
 		}
-		searchDatabase = value;
 	}
 	if(sectionSelected == 1) {
 		for(var i = 0; i < cardCollection.length; i++) {
@@ -39,27 +41,43 @@ function searchForCards(page, value) {
 			if(value.startsWith('set:') && card.setsEn != undefined) {
 				for(var s = 0; s < card.setsEn.length; s++) {
 					if(card.setsEn[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
-						if($.inArray(card, cardsFound) == -1) {
-							cardsFound.push(card);
+						if($.inArray(card, objectsFound) == -1) {
+							objectsFound.push(card);
 						}
 						break;
 					}
 				}
 			} else {
 				if(card.title.toLowerCase().includes(value.toLowerCase())) {
-					if($.inArray(card, cardsFound) == -1) {
-						cardsFound.push(card);
+					if($.inArray(card, objectsFound) == -1) {
+						objectsFound.push(card);
 					}
 				}
 			}
 		}
-		searchCollection = value;
 	}
 	if(sectionSelected == 2) {
-		var cards = deckList[deckSelected].cards;
-		for(var i = 0; i < cards.length; i++) {
-			if(cards[i].title.toLowerCase().includes(value.toLowerCase())) {
-				cardsFound.push(cards[i]);
+		if(deckSelected == undefined) {
+			var deckNameList = getDeckList();
+			for(var i = 0; i < deckNameList.length; i++) {
+				objectsFound.push(getDeck(deckNameList[i]));
+			}
+		} else {
+			var deck = getDeck(deckSelected);
+			for(var i = 0; i < deck.cards.length; i++) {
+				var card = deck.cards[i].card;
+				if(value.startsWith('set:') && card.setsEn != undefined) {
+					for(var s = 0; s < card.setsEn.length; s++) {
+						if(card.setsEn[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
+							objectsFound.push(card);
+							break;
+						}
+					}
+				} else {
+					if(card.title.toLowerCase().includes(value.toLowerCase())) {
+						objectsFound.push(card);
+					}
+				}
 			}
 		}
 	}
@@ -67,77 +85,82 @@ function searchForCards(page, value) {
 	var sortMode = $('#sort-select').find('option:selected').attr('value');
 
 	if(sortMode == 1) { // A -Z
-		cardsFound.sort(function(a,b) {return (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0);} ); 
+		objectsFound.sort(function(a,b) {return (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0);} ); 
 	}
 	if(sortMode == 2) { // Z - A
-		cardsFound.sort(function(b,a) {return (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0);} ); 
+		objectsFound.sort(function(b,a) {return (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0);} ); 
 	}
 	if(sortMode == 3) { // First - Last
 		// array is already sorted this way
 	}
 	if(sortMode == 4) { // Last - First
-		cardsFound.reverse();
-	}
-	if(sortMode == 5) { // ($) Low - High
-		// var cardsChecked = 0;
-		// var requests = [];
-
-		// for(var i = 0; i < cardsFound.length; i++) {
-		// 	cardsFound[i].cost = 0;
-		// 	requests.push($.getJSON(getYqlFromUrl('https://yugiohprices.com/api/price_for_print_tag/' + cardCollection[i].set), function(data) {
-		// 		if(data == undefined || data.query.results == null) return;
-		// 		var json = data.query.results.json;
-		// 		if(json.status == 'success' && json.data.price_data.price_data.status == "success") {
-		// 			var prices = json.data.price_data.price_data.data.prices;
-		// 			low += parseFloat(prices.low);
-		// 			average += parseFloat(prices.average);
-		// 			high += parseFloat(prices.high);
-		// 			cardsChecked++;
-		// 			success = true;
-		// 			cardsContainer.html('(' + cardsChecked + '/' + cardsFound.length + ' checked)');
-		// 		}
-		// 	}));
-		// }
-
-		// var finished = false;
-
-		// $.when.apply($, requests).done(function() {
-		// 	finished = true;
-		// });
-
-		// while(!finish) {}
+		objectsFound.reverse();
 	}
 
-	setPagination(page, parseInt(cardsFound.length / 24) + 1);
+	setPagination(page, parseInt(objectsFound.length / 24) + 1);
+
+	if(sectionSelected == 2 && deckSelected != undefined) {
+		cardsContainer.append($('<div/>', { class: 'deck-title' })
+			.append($('<button/>', {
+				type: 'button',
+				class: 'btn btn-sm btn-outline-primary',
+				click: function() { deckSelected = undefined; changeSection(2) }
+			}).html('<span class="glyphicon glyphicon-arrow-left"></span>'))
+			.append(' <b>' + deckSelected + '</b>')
+		);
+	}
 
 	for(i = 24 * (page - 1); i < 24 * page; i++) {
-		// if(i < 24 * (page - 1) || i >= 24 * page) break;
-		if(i >= cardsFound.length) break;
+		if(i >= objectsFound.length) break;
 
-		var cardFound = cardsFound[i];
-
-		var title = cardFound.title;
-
-		cardsContainer.append(
-			$('<div/>', { class: 'card-container' }).append(
-				$('<div/>', { class: 'card-img-wrapper' }).append(
-					$('<a/>', { href: '#', click: function() { showCardDetails($(this).attr('card')) }}).attr('card', title)
-						.append($('<img/>', { src: cardFound.imageUrl }))
-						.append($('<br>'))
-						.append($('<span/>', { class: 'badge badge-pill badge-success coll-number-' + cardFound.id }))
-						.append(' ' + cardFound.title)
+		if(sectionSelected == 2 && deckSelected == undefined) {
+			var deckFound = objectsFound[i];
+			var firstCard = deckFound.cards[0].card;
+			var deckName = deckFound.title;
+			cardsContainer.append(
+				$('<div/>', { class: 'card-container' }).append(
+					$('<div/>', { class: 'card-img-wrapper' }).append(
+						$('<a/>', { href: '#', click: function() { selectDeck($(this).attr('deck')) }}).attr('deck', deckName)
+							.append($('<img/>', { src: firstCard.imageUrl }))
+							.append($('<br>'))
+							.append($('<span/>', { class: 'badge badge-pill badge-success coll-deck-size-' + deckName.replace(' ', '_') }))
+							.append(' ' + deckName)
+					)
 				)
-			)
-		);
+			);
+			updateCollectionBadges();
+		} else {
+			var cardFound = objectsFound[i];
+			var title = cardFound.title;
 
-		updateCollectionElements(cardFound);
+			cardsContainer.append(
+				$('<div/>', { class: 'card-container' }).append(
+					$('<div/>', { class: 'card-img-wrapper' }).append(
+						$('<a/>', { href: '#', click: function() { showCardDetails($(this).attr('card')) }}).attr('card', title)
+							.append($('<img/>', { src: cardFound.imageUrl }))
+							.append($('<br>'))
+							.append($('<span/>', { 
+								class: sectionSelected != 2 ? 'badge badge-pill badge-success coll-number-' + cardFound.id : ''
+							}))
+							.append(' ' + cardFound.title)
+					)
+				)
+			);
+			updateCollectionBadges(cardFound);
+		}
 	}
+}
+
+function selectDeck(deck) {
+	deckSelected = deck;
+	searchForCards(1);
 }
 
 function showCardDetails(title) {
 	var card = getCardFromTitle(title);
 	$.featherlight(getCardDetailsDOM(card));
-	updateCollectionElements(card);
+	updateCardSetTable(card);
+	updateCollectionBadges(card);
 
 	if(card.setsEn != undefined) {
 		for(var i = 0; i < card.setsEn.length; i++) {
@@ -175,7 +198,7 @@ function getCardDetailsDOM(card) {
 				'<th>#</th>' +
 				'<th>Set</th>' +
 				'<th>Rarity</th>' +
-				'<th>Price</th>' +
+				'<th><a href="http://yugiohprices.com/card_price?name=' + card.title + '" target="_blank">Price</a></th>' +
 			'</tr>' +
 		'</thead>'
 	);
@@ -187,6 +210,8 @@ function getCardDetailsDOM(card) {
 			tBody.append(getSetTableEntry(card, card.setsEn[i].number, card.setsEn[i].setName, card.setsEn[i].rarity));
 		}
 	}
+
+	// divDetails.append($('<datalist/>', { id: 'datalist-decks' }));
 
 	return divDetails;
 }
@@ -205,22 +230,7 @@ function getTableEntryDOM(name, value, link, bold) {
 function getSetTableEntry(card, number, set, rarity) {
 	var row = $('<tr/>');
 
-	var tdCollection = $('<td/>')
-		.append($('<span/>', { class: 'badge badge-pill badge-success coll-number-details-' + number }).html(0))
-		.append(' ')
-		.append($('<button/>', {
-			type: 'button',
-			class: 'btn btn-xs btn-success',
-			click: function() { addToCollection(number, card.title) }
-		}).html('+'))
-		.append(' ')
-		.append($('<button/>', {
-			type: 'button',
-			class: 'btn btn-xs btn-danger coll-remove-' + number,
-			click: function() { removeFromCollection(number, card.title) }
-		}).html('-'))
-
-		.appendTo(row);
+	var tdCollection = $('<td/>', { class: 'td-coll-' + number }).appendTo(row);
 
 	var tdNumber = $('<td/>').append(number).appendTo(row);
 
@@ -229,7 +239,7 @@ function getSetTableEntry(card, number, set, rarity) {
 		.append(
 			$('<a/>', {
 				href: '#',
-				click: function() { searchForSet(set) }
+				click: function() { changeSection(0); searchForSet(set) }
 			}).append('<span class="glyphicon glyphicon-search"></span>')
 		).appendTo(row);
 
@@ -321,9 +331,6 @@ function setPagination(page, totalPages) {
 	var next = $('#page-next');
 	var last = $('#page-last');
 
-	page2.css('display', totalPages > 1 ? '' : 'none');
-	page3.css('display', totalPages > 2 ? '' : 'none');
-
 	if(page == 1) {
 		first.addClass('disabled');
 		prev.addClass('disabled');
@@ -360,9 +367,20 @@ function setPagination(page, totalPages) {
 		page3.find('a').html(page + 1);
 	}
 
-	page1.find('a').attr('onclick', 'searchForCards(' + page1.find('a').html() + ')');
-	page2.find('a').attr('onclick', 'searchForCards(' + page2.find('a').html() + ')');
-	page3.find('a').attr('onclick', 'searchForCards(' + page3.find('a').html() + ')');
+	valuePage1 = parseInt(page1.find('a').html());
+	valuePage2 = parseInt(page2.find('a').html());
+	valuePage3 = parseInt(page3.find('a').html());
+
+	page1.css('display', valuePage1 > totalPages || valuePage1 < 1 ? 'none' : '');
+	page2.css('display', valuePage2 > totalPages || valuePage2 < 1 ? 'none' : '');
+	page3.css('display', valuePage3 > totalPages || valuePage3 < 1 ? 'none' : '');
+
+	// page2.css('display', totalPages > 1 ? '' : 'none');
+	// page3.css('display', totalPages > 2 ? '' : 'none');
+
+	page1.find('a').attr('onclick', 'searchForCards(' + valuePage1 + ')');
+	page2.find('a').attr('onclick', 'searchForCards(' + valuePage2 + ')');
+	page3.find('a').attr('onclick', 'searchForCards(' + valuePage3 + ')');
 
 	first.find('a').attr('onclick', 'searchForCards(' + 1 + ')');
 	prev.find('a').attr('onclick', 'searchForCards(' + (page - 1) + ')');

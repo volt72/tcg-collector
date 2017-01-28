@@ -1,4 +1,5 @@
 var sectionSelected = 0;
+var deckSelected = undefined;
 var numberSections = 4;
 
 $(document).ready(function() {
@@ -35,16 +36,15 @@ function changeSection(i) {
 		$("#list-section" + s).removeClass("active");
 		$("#cards-container" + s).css("display", "none");
 	}
-	for(var d = 0; d < 3; d++) {
-		$("#list-section2-" + d).removeClass("active");
-	}
-	$("#list-section" + i + (i == 2 ? "-" + deckSelected : "")).addClass("active");
+	$("#list-section" + i).addClass("active");
 	$("#cards-container" + i).css("display", "");
 
-	if(i == 0) $('#search-box').val(searchDatabase);
-	if(i == 1) $('#search-box').val(searchCollection);
+	// if(i == 2) {
+	// 	deckSelected = undefined;
+	// }
 
 	if(i != 3) {
+		$('#search-box').val(searchSection[i]);
 		searchForCards(1);
 	} else {
 		$('#cards-container3').html(getStatisticsHtml());
