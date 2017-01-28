@@ -130,8 +130,9 @@ function updateCardSetTable(card) {
 				tdCollection.append($('<div/>').attr('set', set).attr('deck', uniqueDecks[d])
 					.append($('<span/>', { class: 'badge badge-pill badge-success coll-number-details-' + set + '-' + uniqueDecks[d] }).html(0))
 					.append(' ')
-					.append($('<input/>', { class: 'form-control typeahead', type: 'search', value: uniqueDecks[d] })
+					.append($('<input/>', { class: 'typeahead', type: 'search', value: uniqueDecks[d], afterSelect: function() { changeDeckValue($(this)) } })
 						.on('input', function() { changeDeckValue($(this)) })
+						.on('typeahead:selected', function() { changeDeckValue($(this)) })
 						.on('focusin', function() { setDeckNameRecent($(this)) })
 					)
 					.append(' ')
@@ -311,6 +312,7 @@ function setDeckNameRecent(input) {
 
 function changeDeckValue(input, card) {
 	var value = input.val();
+	console.log(value);
 	renameDeckForSet(input.parent().parent().attr('set'), deckNameRecent, value);
 	input.parent().parent().attr('deck', value); // Two parents needed for typeahead
 	// input.attr('id', 'deck-input-' + input.attr('set') + '-' + value);
