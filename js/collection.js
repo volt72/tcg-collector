@@ -312,7 +312,6 @@ function setDeckNameRecent(input) {
 
 function changeDeckValue(input, card) {
 	var value = input.val();
-	console.log(value);
 	renameDeckForSet(input.parent().parent().attr('set'), deckNameRecent, value);
 	input.parent().parent().attr('deck', value); // Two parents needed for typeahead
 	// input.attr('id', 'deck-input-' + input.attr('set') + '-' + value);
@@ -385,10 +384,17 @@ function renameDeckForSet(set, deckOld, deckNew) {
 	for(var i = 0; i < cardCollection.length; i++) {
 		if(cardCollection[i].set == set && cardCollection[i].deck == deckOld) {
 			cardCollection[i].deck = deckNew;
-			console.log('Renamed ' + set + ' from ' + deckOld + ' to ' + deckNew);
 		}
 	}
 	saveCollection();
+}
+
+function renameDeck(deckOld, deckNew) {
+	for(var i = 0; i < cardCollection.length; i++) {
+		if(cardCollection[i].deck == deckOld) {
+			cardCollection[i].deck = deckNew;
+		}
+	}
 }
 
 function collectionToArray() {

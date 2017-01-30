@@ -100,14 +100,19 @@ function searchForCards(page, value) {
 	setPagination(page, parseInt(objectsFound.length / 24) + 1);
 
 	if(sectionSelected == 2 && deckSelected != undefined) {
-		cardsContainer.append($('<div/>', { class: 'deck-title' })
+		cardsContainer.append($('<div/>', { class: 'deck-title' }).append($('<form/>').submit(function() { submitDeckTitle(); return false; })
 			.append($('<button/>', {
 				type: 'button',
 				class: 'btn btn-sm btn-outline-primary',
 				click: function() { deckSelected = undefined; changeSection(2) }
 			}).html('<span class="glyphicon glyphicon-arrow-left"></span>'))
-			.append(' <b>' + deckSelected + '</b>')
-		);
+			.append($('<span/>', { id: 'deck-title-text' }).html(' <b>' + deckSelected + '</b> ')
+			.append($('<button/>', {
+				type: 'button',
+				class: 'btn btn-xs btn-primary',
+				click: function() { editDeckTitle() }
+			}).html('<span class="glyphicon glyphicon-pencil"></span>')))
+		));
 	}
 
 	for(i = 24 * (page - 1); i < 24 * page; i++) {
@@ -154,6 +159,23 @@ function searchForCards(page, value) {
 function selectDeck(deck) {
 	deckSelected = deck;
 	searchForCards(1);
+}
+
+function editDeckTitle() {
+	$('#deck-title-text').html(' ').append($('<input/>', { type: 'text' }).val(deckSelected).attr('autofocus', true));
+}
+
+function submitDeckTitle() {
+	var value = $('#deck-title-text').find('input').val();
+	renameDeck(deckSelected, value);
+	deckSelected = value;
+	saveCollection();
+
+	$('#deck-title-text').html(' <b>' + deckSelected + '</b> ').append($('<button/>', {
+		type: 'button',
+		class: 'btn btn-xs btn-primary',
+		click: function() { editDeckTitle() }
+	}).html('<span class="glyphicon glyphicon-pencil"></span>'));
 }
 
 function showCardDetails(title) {
