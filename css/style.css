@@ -5,6 +5,13 @@
   align-items: center;
   position: relative; }
 
+.navbar-header img {
+  width: 32px;
+  float: left;
+  position: relative;
+  top: -7px;
+  margin-right: 10px; }
+
 .content {
   height: calc(100vh - 52px);
   display: flex;
