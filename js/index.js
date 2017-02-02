@@ -13,7 +13,9 @@ $(document).ready(function() {
     		console.log("Error", e.message);
 		}
 		return false;
-	});
+	}).on('focus', 'input', function() {
+		this.select();
+	})
 
 	$('#sort-select').on('change', function() {
 		searchForCards(1, $('search-form').val());
