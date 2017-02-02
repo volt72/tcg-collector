@@ -1,9 +1,9 @@
 // var searchDatabase = "", searchCollection = "";
-var searchSection = { 0: "", 1: "", 2: "", 3: "" };
+var searchSection = { 0: "", 1: "", 2: "", 3: "", 4: "" };
 var deckNameRecent;
 
 function searchForCards(page, value) {
-	if(sectionSelected == 3) return;
+	if(sectionSelected > 2) return;
 	if(page < 1) page = 1;
 	if(value == undefined) {
 		value = document.getElementById('search-box').value;

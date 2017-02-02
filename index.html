@@ -50,6 +50,7 @@
 
 		          	<li id="list-section2"><a href="#" onclick="changeSection(2)">My Decks <span class="badge" id="decks-badge"></span></a></li>
 		          	<li id="list-section3"><a href="#" onclick="changeSection(3)">Statistics</a></li>
+		          	<li id="list-section4"><a href="#" onclick="changeSection(4)">About</a></li>
 
 		          	<!-- <li id="list-section1"><a href="#" onclick="changeSection(3)">Netdecks</a></li> -->
 		        </ul>
@@ -74,6 +75,22 @@
 			<div class="col-sm-9 main" id="cards-container1" style="display:none;"></div>
 			<div class="col-sm-9 main" id="cards-container2" style="display:none;"></div>
 			<div class="col-sm-9 main" id="cards-container3" style="display:none;"></div>
+			<div class="col-sm-9 main" id="cards-container4" style="display:none;">
+				<p><i>TCG Collector</i> is a simple web app to log and view one's trading card collection.
+				<br>Currently <i>TCG Collector</i> is built only for <a href="http://yugioh.wikia.com/wiki/Yu-Gi-Oh!_Wikia" target="_blank">Yu-Gi-Oh!</a> but is planned to be expanded to other card games.</p><br>
+				<p><b>How to use:</b><br><br>
+				Search for the title of the card you wish to add to your collection, and click the card from the results page.<br>
+				There is a 'collection' column under the sets table where you can edit the number of cards you have of each <a href="http://yugioh.wikia.com/wiki/Set_Number" target="_blank">set number</a>.<br>
+				Cards can be sorted into decks for ease of viewing.
+				</p><br>
+				<p><b>Planned Features:</b>
+					<ul>
+						<li>Expanding into other TCGs (priority is <a href="http://pokemon.wikia.com/wiki/Pok%C3%A9mon_Wiki" target="_blank">Pokémon</a> and <a href="http://mtg.wikia.com/wiki/Magic:_The_Gathering_Wiki" target="_blank">MTG</a>)</li>
+						<li>Building decks with cards not in the collection, to track costs and cards needed</li>
+						<li>Add tips to the card details window</li>
+					</ul>
+				</p>
+			</div>
 		</div>
 
 		<!-- Make script imports work for both electron and browser -->
@@ -83,7 +100,6 @@
 		<script src="js/bootstrap.min.js"></script>
 
 		<script src="js/typeahead.bundle.min.js"</script>
-		<script src="js/js.cookie.js"></script>
 		<script src="js/cookiehelper.js"></script>
 		<script src="js/index.js"></script>
 		<script src="js/getcards.js"></script>

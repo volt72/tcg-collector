@@ -1,6 +1,6 @@
 var sectionSelected = 0;
 var deckSelected = undefined;
-var numberSections = 4;
+var numberSections = 5;
 
 $(document).ready(function() {
 	// removeCookie("card_collection");
@@ -45,11 +45,13 @@ function changeSection(i) {
 	// 	deckSelected = undefined;
 	// }
 
-	if(i != 3) {
+	if(i == 3) {
+		$('#cards-container3').html(getStatisticsHtml());
+	} else if(i == 4) {
+		// $('#cards-container4').html('About page');
+	} else {
 		$('#search-box').val(searchSection[i]);
 		searchForCards(1);
-	} else {
-		$('#cards-container3').html(getStatisticsHtml());
 	}
 }
 
