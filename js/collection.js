@@ -24,7 +24,8 @@ function addToCollection(set, deck, newDeck) {
 				n++;
 			}
 		} else if(deckList.length > 0) {
-			deck = getDeckList()[0];
+			// deck = getDeckList()[0];
+			deck = cardCollection[cardCollection.length - 1].deck;
 		} else {
 			deck = "Deck 1";
 		}
