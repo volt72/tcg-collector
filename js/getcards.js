@@ -44,9 +44,9 @@ function getCardFromTitle(title) {
 
 function getCardFromSet(set) {
 	for(var i = 0; i < cardList.length; i++) {
-		if(cardList[i].setsEn == undefined) continue;
-		for(var s = 0; s < cardList[i].setsEn.length; s++) {
-			if(cardList[i].setsEn[s].number == set) {
+		if(cardList[i].sets == undefined) continue;
+		for(var s = 0; s < cardList[i].sets.length; s++) {
+			if(cardList[i].sets[s].number == set) {
 				return cardList[i];
 			}
 		}

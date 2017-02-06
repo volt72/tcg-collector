@@ -82,9 +82,9 @@ function updateCollectionBadges(card) {
 		elementCollNumber.html('');
 	}
 
-	if(card.setsEn != undefined) {
-		for(var i = 0; i < card.setsEn.length; i++) {
-			var set = card.setsEn[i].number;
+	if(card.sets != undefined) {
+		for(var i = 0; i < card.sets.length; i++) {
+			var set = card.sets[i].number;
 			var setNumber = getSetNumberInCollection(set);
 			var elementDetails = $('[class*="coll-number-details-' + set + '"]'); // string is like this because set number may contain '?'
 			elementDetails.html(setNumber);
@@ -100,10 +100,10 @@ function updateCollectionBadges(card) {
 }
 
 function updateCardSetTable(card) {
-	if(card.setsEn == undefined) return;
+	if(card.sets == undefined) return;
 
-	for(var i = 0; i < card.setsEn.length; i++) {
-		var set = card.setsEn[i].number;
+	for(var i = 0; i < card.sets.length; i++) {
+		var set = card.sets[i].number;
 		var setNumber = getSetNumberInCollection(set);
 
 		var tdCollection = $('[class*="td-coll-' + set + '"]');
@@ -209,9 +209,9 @@ function updateCardSetTable(card) {
 // 		}
 // 	}
 
-// 	if(card.setsEn != undefined) {
-// 		for(var i = 0; i < card.setsEn.length; i++) {
-// 			var set = card.setsEn[i].number;
+// 	if(card.sets != undefined) {
+// 		for(var i = 0; i < card.sets.length; i++) {
+// 			var set = card.sets[i].number;
 // 			var setNumber = getSetNumberInCollection(set);
 
 // 			var tdCollection = $('[class*="td-coll-' + set + '"]');

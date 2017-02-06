@@ -21,9 +21,9 @@ function searchForCards(page, value) {
 	if(sectionSelected == 0) {
 		for(var i = 0; i < cardList.length; i++) {
 			var card = cardList[i];
-			if(value.startsWith('set:') && card.setsEn != undefined) {
-				for(var s = 0; s < card.setsEn.length; s++) {
-					if(card.setsEn[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
+			if(value.startsWith('set:') && card.sets != undefined) {
+				for(var s = 0; s < card.sets.length; s++) {
+					if(card.sets[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
 						objectsFound.push(card);
 						break;
 					}
@@ -38,9 +38,9 @@ function searchForCards(page, value) {
 	if(sectionSelected == 1) {
 		for(var i = 0; i < cardCollection.length; i++) {
 			var card = cardCollection[i].card;
-			if(value.startsWith('set:') && card.setsEn != undefined) {
-				for(var s = 0; s < card.setsEn.length; s++) {
-					if(card.setsEn[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
+			if(value.startsWith('set:') && card.sets != undefined) {
+				for(var s = 0; s < card.sets.length; s++) {
+					if(card.sets[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
 						if($.inArray(card, objectsFound) == -1) {
 							objectsFound.push(card);
 						}
@@ -66,9 +66,9 @@ function searchForCards(page, value) {
 			var deck = getDeck(deckSelected);
 			for(var i = 0; i < deck.cards.length; i++) {
 				var card = deck.cards[i].card;
-				if(value.startsWith('set:') && card.setsEn != undefined) {
-					for(var s = 0; s < card.setsEn.length; s++) {
-						if(card.setsEn[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
+				if(value.startsWith('set:') && card.sets != undefined) {
+					for(var s = 0; s < card.sets.length; s++) {
+						if(card.sets[s].setName.toLowerCase().includes(value.replace('set:', '').toLowerCase())) {
 							objectsFound.push(card);
 							break;
 						}
@@ -184,9 +184,9 @@ function showCardDetails(title) {
 	updateCardSetTable(card);
 	updateCollectionBadges(card);
 
-	if(card.setsEn != undefined) {
-		for(var i = 0; i < card.setsEn.length; i++) {
-			getCardPrices(card.setsEn[i].number);
+	if(card.sets != undefined) {
+		for(var i = 0; i < card.sets.length; i++) {
+			getCardPrices(card.sets[i].number);
 		}
 	}
 }
@@ -227,9 +227,9 @@ function getCardDetailsDOM(card) {
 
 	var tBody = $('<tbody/>').appendTo(tableSets);
 
-	if(card.setsEn != undefined) {
-		for(var i = 0; i < card.setsEn.length; i++) {
-			tBody.append(getSetTableEntry(card, card.setsEn[i].number, card.setsEn[i].setName, card.setsEn[i].rarity));
+	if(card.sets != undefined) {
+		for(var i = 0; i < card.sets.length; i++) {
+			tBody.append(getSetTableEntry(card, card.sets[i].number, card.sets[i].setName, card.sets[i].rarity));
 		}
 	}
 
