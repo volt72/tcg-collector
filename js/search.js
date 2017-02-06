@@ -438,11 +438,12 @@ function setPagination(page, totalPages) {
 }
 
 function getCardLinksFromString(string) {
+	console.log(string);
 	for(var i = 0; i < cardList.length; i++) {
 		var title = cardList[i].title;
 		if(string.includes(title)) {
-			var re = new RegExp(title, 'g')
-			string = string.replace(re, '<a href="#" onclick="$.featherlight.close(); showCardDetails(\'' + title + '\')">' + title + '</a>');
+			var re = new RegExp('&quot;' + title + '&quot;|"' + title + '"', 'g');
+			string = string.replace(re, '\"<a href="#" onclick="$.featherlight.close(); showCardDetails(\'' + title + '\')">' + title + '</a>\"');
 		}
 	}
 	return string;
