@@ -45,7 +45,7 @@
 .main {
   background-color: whitesmoke; }
 
-.main::-webkit-scrollbar, .sidebar::-webkit-scrollbar {
+.main::-webkit-scrollbar, .sidebar::-webkit-scrollbar, .featherlight-content::-webkit-scrollbar {
   display: none; }
 
 #cards-container0, #cards-container1, #cards-container2, #cards-container3, #cards-container4 {
@@ -83,16 +83,20 @@
   .card-img-wrapper img:hover {
     -webkit-filter: opacity(60%); }
 
-.card-details .card-image {
-  width: 300px;
-  float: left; }
-  .card-details .card-image img {
-    padding-bottom: 20px;
-    width: 100%; }
-.card-details .table-details {
-  width: 500px;
-  float: right;
-  padding-left: 25px; }
+.card-details {
+  width: 900px;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none; }
+  .card-details .card-image {
+    width: 300px;
+    float: left; }
+    .card-details .card-image img {
+      padding-bottom: 20px;
+      width: 100%; }
+  .card-details .table-details {
+    width: 600px;
+    overflow: hidden;
+    padding-left: 25px; }
 
 .nav-page {
   text-align: center; }

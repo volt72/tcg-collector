@@ -192,7 +192,7 @@ function showCardDetails(title) {
 }
 
 function getCardDetailsDOM(card) {
-	var divDetails = $('<div/>', { class: 'card-details' })
+	var divDetails = $('<div/>', { class: 'card-details' });
 	var divCardImage = $('<div/>', { class: 'card-image '})
 		.append($('<img/>', { src: card.imageUrl }))
 		.appendTo(divDetails);
@@ -202,7 +202,7 @@ function getCardDetailsDOM(card) {
 	var tbody = $('<tbody/>').appendTo(tableDetails);
 
 	if(card.title != undefined) 		tbody.append(getTableEntryDOM("Title", card.title, "http://yugioh.wikia.com/wiki/" + encodeURIComponent(card.title)));
-	if(card.lore != undefined) 			tbody.append(getTableEntryDOM("Description", card.lore));
+	if(card.lore != undefined) 			tbody.append(getCardLinksFromString(getTableEntryDOM("Description", card.lore)));
 	if(card.attribute != undefined) 	tbody.append(getTableEntryDOM("Attribute", card.attribute));
 	if(card.types != undefined) 		tbody.append(getTableEntryDOM("Type(s)", arrayToString(card.types)));
 	if(card.level != undefined) 		tbody.append(getTableEntryDOM("Level", card.level));
@@ -211,6 +211,31 @@ function getCardDetailsDOM(card) {
 	if(card.statusTcgAdv != undefined)  tbody.append(getTableEntryDOM("Status (TCG Adv.)", card.statusTcgAdv, undefined, true));
 	if(card.number != undefined) 		tbody.append(getTableEntryDOM("Number", card.number));
 
+	var divTips = $('<div/>', { class: 'panel-group', style:'float: left; width: 100%' }).appendTo(divDetails);
+
+	if(card.tips != undefined) {
+		var tipsListGroup = $('<ul/>', { class: 'list-group' });
+		for(var i = 0; i < card.tips.length; i++) {
+			tipsListGroup.append('<li class="list-group-item">' + getCardLinksFromString(card.tips[i].value) + '</li>');
+		}
+
+		divTips.append(
+			$('<div/>', { class: 'panel panel-default' })
+				.append(
+					$('<a/>', { href: '#tips-collapse' }).attr('data-toggle', 'collapse')
+					.append(
+						$('<div/>', { class: 'panel-heading' })
+							.append('<h4 class="panel-title">' +
+					        	'<a data-toggle="collapse" href="#tips-collapse">Show Tips</a>' +
+					      		'</h4>')
+						)
+				)
+				.append(
+					$('<div/>', { class: 'panel-collapse collapse' }).attr('id', 'tips-collapse').append(tipsListGroup)
+				)
+		);
+	}
+
 	var divTableSets = $('<div/>', { class: 'table-sets' }).appendTo(divDetails);
 	var tableSets = $('<table/>', { class: 'table table-bordered'}).appendTo(divTableSets);
 	tableSets.append(
@@ -218,8 +243,8 @@ function getCardDetailsDOM(card) {
 			'<tr>' +
 				'<th>Owned</th>' +
 				'<th>#</th>' +
-				'<th>Set</th>' +
-				'<th>Rarity</th>' +
+				'<th style="width:240px">Set</th>' +
+				'<th style="width:110px">Rarity</th>' +
 				'<th><a href="http://yugiohprices.com/card_price?name=' + card.title + '" target="_blank">Price</a></th>' +
 			'</tr>' +
 		'</thead>'
@@ -233,8 +258,6 @@ function getCardDetailsDOM(card) {
 		}
 	}
 
-	// divDetails.append($('<datalist/>', { id: 'datalist-decks' }));
-
 	return divDetails;
 }
 
@@ -245,6 +268,7 @@ function getTableEntryDOM(name, value, link, bold) {
 	if(value == "Unlimited") color = 'rgb(150, 255, 150)';
 	if(value == "Limited") color = 'rgb(150, 255, 255)';
 	if(value == "Forbidden") color = 'rgb(255, 150, 150)';
+	if(value == "Illegal") color = 'rgb(150, 150, 150)';
 	if(bold) value = '<b>' + value + '</b>';
 	return '<tr><td><b>' + name + '</b></td><td ' + (color != undefined ? 'style="background-color:' + color + '"' : '') + '>' + value + '</td></tr>';
 }
@@ -411,4 +435,15 @@ function setPagination(page, totalPages) {
 
 	if(page == 1) prev.find('a').attr('onclick', '');
 	if(page == totalPages) next.find('a').attr('onclick', '');
+}
+
+function getCardLinksFromString(string) {
+	for(var i = 0; i < cardList.length; i++) {
+		var title = cardList[i].title;
+		if(string.includes(title)) {
+			var re = new RegExp(title, 'g')
+			string = string.replace(re, '<a href="#" onclick="$.featherlight.close(); showCardDetails(\'' + title + '\')">' + title + '</a>');
+		}
+	}
+	return string;
 }
