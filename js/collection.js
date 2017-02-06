@@ -88,12 +88,13 @@ function updateCollectionBadges(card) {
 			var setNumber = getSetNumberInCollection(set);
 			var elementDetails = $('[class*="coll-number-details-' + set + '"]'); // string is like this because set number may contain '?'
 			elementDetails.html(setNumber);
-		}
-		for(var d = 0; d < deckList.length; d++) {
-			var elementNumberInDeck = $('[class*="coll-number-details-' + set + '-' + deckList[d] + '"]'); // string is like this because set number may contain '?'
-			var deckNumber = getSetNumberInDeck(set, deckList[d]);
-			if(elementNumberInDeck != undefined) {
-				elementNumberInDeck.html(deckNumber);
+
+			for(var d = 0; d < deckList.length; d++) {
+				var elementNumberInDeck = $('[class*="coll-number-details-' + set + '-' + deckList[d] + '"]'); // string is like this because set number may contain '?'
+				var deckNumber = getSetNumberInDeck(set, deckList[d]);
+				if(elementNumberInDeck != undefined) {
+					elementNumberInDeck.html(deckNumber);
+				}
 			}
 		}
 	}

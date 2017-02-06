@@ -438,7 +438,6 @@ function setPagination(page, totalPages) {
 }
 
 function getCardLinksFromString(string) {
-	console.log(string);
 	for(var i = 0; i < cardList.length; i++) {
 		var title = cardList[i].title;
 		if(string.includes(title)) {
