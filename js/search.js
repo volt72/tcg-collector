@@ -281,7 +281,7 @@ function getSetTableEntry(card, number, set, rarity) {
 	var tdNumber = $('<td/>').append(number).appendTo(row);
 
 	var tdSet = $('<td/>')
-		.append('<a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set) + '" target="_blank">' + set + '</a> &nbsp;')
+		.append('<a href="http://yugioh.wikia.com/wiki/' + encodeURIComponent(set.replace(' (NA)', '').replace(' (EU)', '')) + '" target="_blank">' + set + '</a> &nbsp;')
 		.append(
 			$('<a/>', {
 				href: '#',
