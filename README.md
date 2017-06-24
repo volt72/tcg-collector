@@ -1,2 +1,3 @@
-# tcg-collector
-TCG Collector
+# TCG Collection
+
+https://kianbennett.github.io/tcg-collector/
